@@ -1,0 +1,278 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "request": "attach",
+            "name": "Java",
+            "port": 5005,
+            "sourceRoots": []
+        },
+
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "com.geekbang.demo.backend.Main",
+            "projectName": "demo-fraud-webapp"
+        },
+        {
+            "type": "java",
+            "name": "Main(1)",
+            "request": "launch",
+            "mainClass": "com.ververica.demo.backend.Main",
+            "projectName": "demo-fraud-webapp"
+        },
+        {
+            "type": "java",
+            "name": "AsyncIOExample",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.asyncio.AsyncIOExample",
+            "projectName": "lab-3-datastream-api",
+            "vmArgs": "--add-opens java.base/java.lang=ALL-UNNAMED",
+            "classPaths": [
+                "${workspaceFolder}/lab-3-datastream-api/target/classes",
+                "${workspaceFolder}/lab-3-datastream-api/target/dependency/*"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "StreamingWithWindowJoinExample",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.join.StreamingWithWindowJoinExample",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "SteamingWithCustomPartitionerExample",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.partitioner.SteamingWithCustomPartitionerExample",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "StreamingWithSideOutputExample",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.sideoutput.StreamingWithSideOutputExample",
+            "projectName": "lab-3-datastream-api",
+            "args": "",
+            "vmArgs": "--add-opens java.base/java.lang=ALL-UNNAMED",
+            "classPaths": [
+                "${workspaceFolder}/lab-3-datastream-api/target/classes",
+                "${workspaceFolder}/lab-3-datastream-api/target/dependency/*"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "StreamingWithKafkaSinkExample",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.sink.StreamingWithKafkaSinkExample",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "StreamingWithRedisSinkExample",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.sink.StreamingWithRedisSinkExample",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "StreamingDemoWithMyNoPralalleSource",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.source.StreamingDemoWithMyNoPralalleSource",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "StreamingDemoWithMyPralalleSource",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.source.StreamingDemoWithMyPralalleSource",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "StreamingDemoWithMyRichPralalleSource",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.source.StreamingDemoWithMyRichPralalleSource",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "StreamingFromCollection",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.source.StreamingFromCollection",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "StreamingKafkaSource",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.source.StreamingKafkaSource",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "StreamingDemoConnect",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.transform.StreamingDemoConnect",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "StreamingDemoFilter",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.transform.StreamingDemoFilter",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "StreamingDemoSplit",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.transform.StreamingDemoSplit",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "StreamingDemoUnion",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.transform.StreamingDemoUnion",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "StreamingDemoWithMyNoPralallelSourceBroadcast",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.transform.StreamingDemoWithMyNoPralallelSourceBroadcast",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "PojosClass",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.types.PojosClass",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "StreamingWindowWatermark",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.watermark.StreamingWindowWatermark",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "StreamingWindowWatermark2",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.watermark.StreamingWindowWatermark2",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "GroupedProcessingTimeWindowExample",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.windowing.GroupedProcessingTimeWindowExample",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "SessionWindowing",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.windowing.SessionWindowing",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "SocketDemoIncrAgg",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.windowing.SocketDemoIncrAgg",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "SocketWindowWordCountJava",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.windowing.SocketWindowWordCountJava",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "TopSpeedWindowing",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.windowing.TopSpeedWindowing",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "WindowWordCount",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.windowing.WindowWordCount",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "SocketWindowWordCount",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.wordcount.SocketWindowWordCount",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "WordCount",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.wordcount.WordCount",
+            "projectName": "lab-3-datastream-api"
+        },
+        {
+            "type": "java",
+            "name": "DeltaTriggerExample",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.project.DeltaTriggerExample",
+            "projectName": "project-1-pv-uv-computing"
+        },
+        {
+            "type": "java",
+            "name": "InactiveUserAlert",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.project.InactiveUserAlert",
+            "projectName": "project-1-pv-uv-computing"
+        },
+        {
+            "type": "java",
+            "name": "KafkaMessageProducer",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.project.KafkaMessageProducer",
+            "projectName": "project-1-pv-uv-computing"
+        },
+        {
+            "type": "java",
+            "name": "PVAndUVExample",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.project.PVAndUVExample",
+            "projectName": "project-1-pv-uv-computing"
+        },
+        {
+            "type": "java",
+            "name": "WebSocketClientUtils",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.project.WebSocketClientUtils",
+            "projectName": "project-1-pv-uv-computing"
+        },
+        {
+            "type": "java",
+            "name": "RecommendBackendApplication",
+            "request": "launch",
+            "mainClass": "com.geekbang.recommend.RecommendBackendApplication",
+            "projectName": "recommend-backend"
+        }
+    ]
+}

@@ -1,4 +1,4 @@
-package com.geekbang.flink.transform;
+ package com.geekbang.flink.transform;
 
 import com.geekbang.flink.source.custom.CustomNoParallelSource;
 import org.apache.flink.api.common.functions.MapFunction;

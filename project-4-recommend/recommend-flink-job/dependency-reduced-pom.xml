@@ -68,12 +68,12 @@
     </dependency>
   </dependencies>
   <properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <java.version>1.8</java.version>
-    <encoding>UTF-8</encoding>
-    <flink.version>1.11.1</flink.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <encoding>UTF-8</encoding>
+    <flink.version>1.11.1</flink.version>
   </properties>
 </project>
 

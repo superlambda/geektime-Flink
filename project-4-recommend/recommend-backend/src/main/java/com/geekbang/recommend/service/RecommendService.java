@@ -1,9 +1,11 @@
 package com.geekbang.recommend.service;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import com.geekbang.recommend.dao.ProductRepository;
 import com.geekbang.recommend.util.HbaseClient;
 import com.geekbang.recommend.entity.ProductEntity;
-import javafx.util.Pair;
+// import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,7 @@ public class RecommendService {
             List<Map.Entry> row = HbaseClient.getRow(tableName, productId);
             if (row != null) {
                 double count = (double) row.get(0).getValue();
-                list.add(new Pair<>(productId, count));
+                list.add(new ImmutablePair<>(productId, count));
             }
         }
         // 排序

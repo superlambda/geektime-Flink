@@ -1,0 +1,13 @@
+/Users/liuyingjie/flink_workspace/geektime-Flink/project-4-recommend/recommend-backend/src/main/java/com/geekbang/recommend/util/Property.java
+/Users/liuyingjie/flink_workspace/geektime-Flink/project-4-recommend/recommend-backend/src/main/java/com/geekbang/recommend/service/UserService.java
+/Users/liuyingjie/flink_workspace/geektime-Flink/project-4-recommend/recommend-backend/src/main/java/com/geekbang/recommend/service/RecommendService.java
+/Users/liuyingjie/flink_workspace/geektime-Flink/project-4-recommend/recommend-backend/src/main/java/com/geekbang/recommend/entity/UserEntity.java
+/Users/liuyingjie/flink_workspace/geektime-Flink/project-4-recommend/recommend-backend/src/main/java/com/geekbang/recommend/controller/UserController.java
+/Users/liuyingjie/flink_workspace/geektime-Flink/project-4-recommend/recommend-backend/src/main/java/com/geekbang/recommend/util/SecurityConfig.java
+/Users/liuyingjie/flink_workspace/geektime-Flink/project-4-recommend/recommend-backend/src/main/java/com/geekbang/recommend/entity/ProductEntity.java
+/Users/liuyingjie/flink_workspace/geektime-Flink/project-4-recommend/recommend-backend/src/main/java/com/geekbang/recommend/controller/ProductController.java
+/Users/liuyingjie/flink_workspace/geektime-Flink/project-4-recommend/recommend-backend/src/main/java/com/geekbang/recommend/RecommendBackendApplication.java
+/Users/liuyingjie/flink_workspace/geektime-Flink/project-4-recommend/recommend-backend/src/main/java/com/geekbang/recommend/util/HbaseClient.java
+/Users/liuyingjie/flink_workspace/geektime-Flink/project-4-recommend/recommend-backend/src/main/java/com/geekbang/recommend/dao/ProductRepository.java
+/Users/liuyingjie/flink_workspace/geektime-Flink/project-4-recommend/recommend-backend/src/main/java/com/geekbang/recommend/util/CustomKafkaProducer.java
+/Users/liuyingjie/flink_workspace/geektime-Flink/project-4-recommend/recommend-backend/src/main/java/com/geekbang/recommend/dao/UserRepository.java

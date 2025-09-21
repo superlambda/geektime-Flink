@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Run PVAndUVExample",
+      "request": "launch",
+      "mainClass": "com.geekbang.flink.project.PVAndUVExample",
+      "projectName": "project-1-pv-uv-computing",
+      "args": "--index test_index"
+    }
+  ]
+}

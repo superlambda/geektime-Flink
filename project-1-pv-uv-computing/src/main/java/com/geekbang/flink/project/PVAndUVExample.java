@@ -21,7 +21,8 @@ import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.streaming.connectors.elasticsearch.ActionRequestFailureHandler;
 import org.apache.flink.streaming.connectors.elasticsearch.RequestIndexer;
 import org.apache.flink.streaming.connectors.elasticsearch7.ElasticsearchSink;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
+// import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.util.Collector;
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.ActionRequest;
@@ -40,17 +41,18 @@ public class PVAndUVExample {
 
         final ParameterTool parameterTool = ParameterTool.fromArgs(args);
         String kafkaTopic = parameterTool.get("kafka-topic","default");
-        String brokers = parameterTool.get("brokers", "node01:9092");
+        String brokers = parameterTool.get("brokers", "localhost:9092");
         System.out.printf("Reading from kafka topic %s @ %s\n", kafkaTopic, brokers);
         System.out.println();
         Properties kafkaProps = new Properties();
         kafkaProps.setProperty("bootstrap.servers", brokers);
-        FlinkKafkaConsumer010<UserBehaviorEvent> kafka = new FlinkKafkaConsumer010<>(kafkaTopic, new UserBehaviorEventSchema(), kafkaProps);
+        // FlinkKafkaConsumer010<UserBehaviorEvent> kafka = new FlinkKafkaConsumer010<>(kafkaTopic, new UserBehaviorEventSchema(), kafkaProps);
+        FlinkKafkaConsumer<UserBehaviorEvent> kafka = new FlinkKafkaConsumer<>(kafkaTopic, new UserBehaviorEventSchema(), kafkaProps);
         kafka.setStartFromLatest();
         kafka.setCommitOffsetsOnCheckpoints(false);
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
-
+       
         kafka.assignTimestampsAndWatermarks(
                 WatermarkStrategy
                         .forGenerator((ctx) -> new PeriodicWatermarkGenerator())
@@ -80,7 +82,7 @@ public class PVAndUVExample {
         uvCounter.print().setParallelism(1);
 
         List<HttpHost> httpHosts = new ArrayList<>();
-        httpHosts.add(new HttpHost("node01", 9200, "http"));
+        httpHosts.add(new HttpHost("localhost", 9200, "http"));
 
         ElasticsearchSink.Builder<Tuple4<Long, Long, Long, Integer>> esSinkBuilder = new ElasticsearchSink.Builder<>(
                 httpHosts,
@@ -161,6 +163,7 @@ public class PVAndUVExample {
         json.put("pv", "1234");
         json.put("uv", "1234");
         String index = parameterTool.getRequired("index");
+
         return Requests.indexRequest()
                 .index(index)
                 .id(element.f1.toString())

@@ -18,6 +18,7 @@
 package com.geekbang.flink.asyncio;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
+import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.configuration.Configuration;
@@ -205,7 +206,7 @@ public class AsyncIOExample {
 			// check the configuration for the job
 			statePath = params.get("fsStatePath", null);
 			cpMode = params.get("checkpointMode", "exactly_once");
-			maxCount = params.getInt("maxCount", 100000);
+			maxCount = params.getInt("maxCount", 1000);
 			sleepFactor = params.getLong("sleepFactor", 100);
 			failRatio = params.getFloat("failRatio", 0.001f);
 			mode = params.get("waitMode", "ordered");
@@ -283,16 +284,22 @@ public class AsyncIOExample {
 				20).setParallelism(taskNum);
 		}
 
-		// add a reduce to get the sum of each keys.
-		result.flatMap(new FlatMapFunction<String, Tuple2<String, Integer>>() {
-			private static final long serialVersionUID = -938116068682344455L;
+		// // add a reduce to get the sum of each keys.
+		// result.flatMap(new FlatMapFunction<String, Tuple2<String, Integer>>() {
+		// 	private static final long serialVersionUID = -938116068682344455L;
 
-			@Override
-			public void flatMap(String value, Collector<Tuple2<String, Integer>> out) throws Exception {
-				out.collect(new Tuple2<>(value, 1));
-			}
-		}).keyBy(0).sum(1).print();
+		// 	@Override
+		// 	public void flatMap(String value, Collector<Tuple2<String, Integer>> out) throws Exception {
+		// 		out.collect(new Tuple2<>(value, 1));
+		// 	}
+		// }).keyBy(0).sum(1).print();
 
+		result
+		.map(value -> Tuple2.of(value, 1))
+		.returns(TypeInformation.of(new org.apache.flink.api.common.typeinfo.TypeHint<Tuple2<String, Integer>>() {}))
+		.keyBy(t -> t.f0)
+		.sum("f1")
+		.print();
 		// execute the program
 		env.execute("Async IO Example");
 	}

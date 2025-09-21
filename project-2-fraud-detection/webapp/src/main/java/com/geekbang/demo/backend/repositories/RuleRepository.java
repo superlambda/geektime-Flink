@@ -18,7 +18,6 @@
 package com.geekbang.demo.backend.repositories;
 
 import com.geekbang.demo.backend.entities.Rule;
-
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 

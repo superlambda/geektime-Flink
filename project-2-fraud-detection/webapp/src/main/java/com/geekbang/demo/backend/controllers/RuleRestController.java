@@ -20,11 +20,10 @@ package com.geekbang.demo.backend.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geekbang.demo.backend.entities.Rule;
+import com.geekbang.demo.backend.exceptions.RuleNotFoundException;
 import com.geekbang.demo.backend.model.RulePayload;
 import com.geekbang.demo.backend.repositories.RuleRepository;
 import com.geekbang.demo.backend.services.FlinkRulesService;
-import com.geekbang.demo.backend.exceptions.RuleNotFoundException;
-
 import java.io.IOException;
 import java.util.List;
 import org.springframework.web.bind.annotation.*;

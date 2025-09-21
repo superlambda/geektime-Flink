@@ -1,0 +1,13 @@
+com/geekbang/recommend/util/CustomKafkaProducer.class
+com/geekbang/recommend/dao/ProductRepository.class
+com/geekbang/recommend/util/Property.class
+com/geekbang/recommend/controller/UserController.class
+com/geekbang/recommend/util/SecurityConfig.class
+com/geekbang/recommend/entity/ProductEntity.class
+com/geekbang/recommend/dao/UserRepository.class
+com/geekbang/recommend/util/HbaseClient.class
+com/geekbang/recommend/controller/ProductController.class
+com/geekbang/recommend/RecommendBackendApplication.class
+com/geekbang/recommend/service/UserService.class
+com/geekbang/recommend/entity/UserEntity.class
+com/geekbang/recommend/service/RecommendService.class

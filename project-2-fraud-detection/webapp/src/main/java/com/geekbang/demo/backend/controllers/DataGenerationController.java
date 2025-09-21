@@ -17,10 +17,9 @@
 
 package com.geekbang.demo.backend.controllers;
 
-import com.geekbang.demo.backend.services.KafkaTransactionsPusher;
 import com.geekbang.demo.backend.datasource.DemoTransactionsGenerator;
 import com.geekbang.demo.backend.datasource.TransactionsGenerator;
-
+import com.geekbang.demo.backend.services.KafkaTransactionsPusher;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;

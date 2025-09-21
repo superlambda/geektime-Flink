@@ -2,7 +2,8 @@ package com.geekbang.recommend.function;
 
 import com.geekbang.recommend.util.HbaseClient;
 import com.geekbang.recommend.entity.TopEntity;
-import com.sun.jmx.snmp.Timestamp;
+// import com.sun.jmx.snmp.Timestamp;
+import java.time.*;
 import org.apache.flink.api.common.state.ListState;
 import org.apache.flink.api.common.state.ListStateDescriptor;
 import org.apache.flink.api.java.tuple.Tuple;
@@ -53,7 +54,8 @@ public class HotProducts extends KeyedProcessFunction<Tuple, TopEntity, String> 
 
         StringBuilder sb = new StringBuilder();
         sb.append("===============\n");
-        sb.append("时间:\t").append(new Timestamp(timestamp-1)).append("\n");
+        // sb.append("时间:\t").append(new Timestamp(timestamp-1)).append("\n");
+        sb.append("时间:\t").append(Instant.ofEpochMilli(timestamp - 1)).append("\n");
        try {
            for(int i = 0; i < topSize && i < allProduct.size(); i++) {
                TopEntity topEntity = allProduct.get(i);

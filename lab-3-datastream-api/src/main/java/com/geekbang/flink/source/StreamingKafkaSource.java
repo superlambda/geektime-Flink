@@ -5,7 +5,10 @@ import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.CheckpointConfig;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer011;
+// import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer011;
+import org.apache.flink.connector.kafka.source.KafkaSource;
+import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
+
 
 import java.util.Properties;
 
@@ -34,15 +37,23 @@ public class StreamingKafkaSource {
         prop.setProperty("bootstrap.servers","hadoop110:9092");
         prop.setProperty("group.id","con1");
 
-        FlinkKafkaConsumer011<String> myConsumer = new FlinkKafkaConsumer011<>(topic, new SimpleStringSchema(), prop);
+        // FlinkKafkaConsumer011<String> myConsumer = new FlinkKafkaConsumer011<>(topic, new SimpleStringSchema(), prop);
 
-        myConsumer.setStartFromGroupOffsets();//默认消费策略
+        // KafkaSource<String> source = KafkaSource.<String>builder()
+        // .setBootstrapServers("localhost:9092")
+        // .setTopics("topic_name")
+        // .setGroupId("group_id")
+        // .setStartingOffsets(OffsetsInitializer.earliest())
+        // .setValueOnlyDeserializer(new SimpleStringSchema())
+        // .build();
 
-        DataStreamSource<String> text = env.addSource(myConsumer);
+        // myConsumer.setStartFromGroupOffsets();//默认消费策略
 
-        text.print().setParallelism(1);
+        // DataStreamSource<String> text = env.addSource(myConsumer);
 
-        env.execute("StreamingFromCollection");
+        // text.print().setParallelism(1);
+
+        // env.execute("StreamingFromCollection");
 
 
     }

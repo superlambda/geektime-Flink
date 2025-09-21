@@ -52,7 +52,8 @@ public class FlinkController {
     flinkRulesService.addRule(command);
   }
 
-  private Rule createControllCommand(RulePayload.ControlType clearStateAll) throws JsonProcessingException {
+  private Rule createControllCommand(RulePayload.ControlType clearStateAll)
+      throws JsonProcessingException {
     RulePayload payload = new RulePayload();
     payload.setRuleState(RulePayload.RuleState.CONTROL);
     payload.setControlType(clearStateAll);

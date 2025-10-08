@@ -1,7 +1,6 @@
 com/geekbang/flink/sources/Throttler.class
 com/geekbang/flink/dynamicrules/sinks/LatencySink.class
 com/geekbang/flink/dynamicrules/functions/TimeStamper.class
-com/geekbang/flink/dynamicrules/functions/DynamicKeyFunction$1.class
 com/geekbang/flink/dynamicrules/sources/RulesSource$Type.class
 com/geekbang/flink/dynamicrules/sinks/AlertsSink.class
 com/geekbang/flink/dynamicrules/FieldsExtractor.class

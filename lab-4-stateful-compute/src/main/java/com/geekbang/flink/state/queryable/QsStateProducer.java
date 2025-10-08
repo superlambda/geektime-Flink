@@ -31,7 +31,7 @@ import org.apache.flink.runtime.state.FunctionSnapshotContext;
 import org.apache.flink.runtime.state.StateBackend;
 import org.apache.flink.runtime.state.filesystem.FsStateBackend;
 import org.apache.flink.runtime.state.memory.MemoryStateBackend;
-import org.apache.flink.shaded.guava18.com.google.common.collect.Iterables;
+// import org.apache.flink.shaded.guava18.com.google.common.collect.Iterables;
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
@@ -161,7 +161,7 @@ public class QsStateProducer {
 		@Override
 		public void flatMap(Email value, Collector<Object> out) throws Exception {
 			state.put(value.getEmailId(), new EmailInformation(value));
-			count = Iterables.size(state.keys());
+			// count = Iterables.size(state.keys());
 		}
 
 		@Override

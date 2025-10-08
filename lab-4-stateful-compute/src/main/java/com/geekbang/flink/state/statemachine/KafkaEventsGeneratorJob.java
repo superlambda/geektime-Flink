@@ -22,7 +22,7 @@ import com.geekbang.flink.state.statemachine.generator.EventsGeneratorSource;
 import com.geekbang.flink.state.statemachine.kafka.EventDeSerializer;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer010;
+// import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer010;
 
 /**
  * Job to generate input events that are written to Kafka, for the {@link StateMachineExample} job.
@@ -44,12 +44,12 @@ public class KafkaEventsGeneratorJob {
 
 		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-		env
-			.addSource(new EventsGeneratorSource(errorRate, sleep))
-			.addSink(new FlinkKafkaProducer010<>(brokers, kafkaTopic, new EventDeSerializer()));
+		// env
+		// 	.addSource(new EventsGeneratorSource(errorRate, sleep))
+		// 	.addSink(new FlinkKafkaProducer010<>(brokers, kafkaTopic, new EventDeSerializer()));
 
-		// trigger program execution
-		env.execute("State machine example Kafka events generator job");
+		// // trigger program execution
+		// env.execute("State machine example Kafka events generator job");
 	}
 
 }

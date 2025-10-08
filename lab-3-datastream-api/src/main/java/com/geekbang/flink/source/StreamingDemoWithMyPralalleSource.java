@@ -6,6 +6,7 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 
 /**
@@ -22,14 +23,15 @@ public class StreamingDemoWithMyPralalleSource {
 
         DataStream<Long> num = text.map(new MapFunction<Tuple2<String, Long>, Long>() {
             @Override
-            public Long map(Tuple2<String, Long> input) throws Exception {
+            public Long map(Tuple2<String, Long> input) {
                 System.out.println("接收到数据：" + "ThreadName: " + input.f0 + " ,Value:" + input.f1);
                 return input.f1;
             }
         });
 
         //每2秒钟处理一次数据
-        DataStream<Long> sum = num.timeWindowAll(Time.seconds(2)).sum(0);
+        // DataStream<Long> sum = num.timeWindowAll(Time.seconds(2)).sum(0);
+        DataStream<Long> sum = num.windowAll(TumblingProcessingTimeWindows.of(Time.seconds(2))).sum(0);
 
         //打印结果
         sum.print().setParallelism(1);

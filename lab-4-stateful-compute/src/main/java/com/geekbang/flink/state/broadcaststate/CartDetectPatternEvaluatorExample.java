@@ -3,6 +3,8 @@ package com.geekbang.flink.state.broadcaststate;
 import com.geekbang.flink.state.broadcaststate.model.Action;
 import com.geekbang.flink.state.broadcaststate.model.Pattern;
 import com.geekbang.flink.state.common.kafka.KafkaExampleUtil;
+
+import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.state.BroadcastState;
 import org.apache.flink.api.common.state.MapStateDescriptor;
 import org.apache.flink.api.common.state.ValueState;
@@ -12,12 +14,14 @@ import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.connector.kafka.source.KafkaSource;
+import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.BroadcastStream;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.KeyedBroadcastProcessFunction;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.util.Collector;
 
 public class CartDetectPatternEvaluatorExample {
@@ -27,20 +31,48 @@ public class CartDetectPatternEvaluatorExample {
         final ParameterTool parameterTool = ParameterTool.fromArgs(args);
         StreamExecutionEnvironment env = KafkaExampleUtil.prepareExecutionEnv(parameterTool);
 
-        DataStream<Action> actions = env
-                .addSource(
-                        new FlinkKafkaConsumer010<>(
-                                parameterTool.getRequired("action-topic"),
-                                new ActionEventSchema(),
-                                parameterTool.getProperties()));
+        // DataStream<Action> actions = env
+        //         .addSource(
+        //                 new FlinkKafkaConsumer<>(
+        //                         parameterTool.getRequired("action-topic"),
+        //                         new ActionEventSchema(),
+        //                         parameterTool.getProperties()));
+        // DataStream<Pattern> patterns = env
+        //         .addSource(
+        //                 new FlinkKafkaConsumer<>(
+        //                         parameterTool.getRequired("pattern-topic"),
+        //                         new PatternEventSchema(),
+        //                         parameterTool.getProperties()));
 
-        DataStream<Pattern> patterns = env
-                .addSource(
-                        new FlinkKafkaConsumer010<>(
-                                parameterTool.getRequired("pattern-topic"),
-                                new PatternEventSchema(),
-                                parameterTool.getProperties()));
+        // Actions stream
+        KafkaSource<Action> actionSource = KafkaSource.<Action>builder()
+                .setBootstrapServers(parameterTool.getRequired("bootstrap.servers"))
+                .setTopics(parameterTool.getRequired("action-topic"))
+                .setGroupId(parameterTool.getRequired("group.id"))
+                .setStartingOffsets(OffsetsInitializer.earliest())
+                .setValueOnlyDeserializer(new ActionEventSchema())
+                .build();
 
+        DataStream<Action> actions = env.fromSource(
+                actionSource,
+                WatermarkStrategy.noWatermarks(),
+                "Kafka Action Source"
+        );
+
+        // Patterns stream
+        KafkaSource<Pattern> patternSource = KafkaSource.<Pattern>builder()
+                .setBootstrapServers(parameterTool.getRequired("bootstrap.servers"))
+                .setTopics(parameterTool.getRequired("pattern-topic"))
+                .setGroupId(parameterTool.getRequired("group.id"))
+                .setStartingOffsets(OffsetsInitializer.earliest())
+                .setValueOnlyDeserializer(new PatternEventSchema())
+                .build();
+
+        DataStream<Pattern> patterns = env.fromSource(
+                patternSource,
+                WatermarkStrategy.noWatermarks(),
+                "Kafka Pattern Source"
+        );
         KeyedStream<Action, Long> actionsByUser = actions
                 .keyBy((KeySelector<Action, Long>) action -> action.userId);
 

@@ -1,4 +1,5 @@
-FROM openjdk:8 AS job-build
+# FROM openjdk:8 AS job-build
+FROM eclipse-temurin:11-jdk AS build
 WORKDIR /home/gradle/app/
 
 COPY build.gradle settings.gradle ./
@@ -19,7 +20,8 @@ RUN ./gradlew build
 
 # ---
 
-FROM flink:1.8.2
+# FROM flink:1.8.2
+FROM flink:1.17.2-scala_2.12
 
 # # COPY --from=job-build /home/gradle/work/build/dynamic-fraud-detection-demo.jar lib/job.jar
 COPY --from=job-build /home/gradle/app/build/libs/dynamic-fraud-detection-demo-all.jar lib/job.jar

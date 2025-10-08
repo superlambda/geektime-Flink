@@ -1,69 +1,64 @@
-version: "2.1"
 services:
-
-  ### Zookeeper ###
-
   zoo1:
-    image: zookeeper:3.4.9
-    restart: unless-stopped
+    image: confluentinc/cp-zookeeper:5.0.0
     hostname: zoo1
-    ports:
-    - "2181:2181"
     environment:
-      ZOO_MY_ID: 1
-      ZOO_PORT: 2181
-      ZOO_SERVERS: server.1=zoo1:2888:3888
-
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    restart: unless-stopped
   ### Kafka ###
-
   kafka-cp-kafka-headless:
     image: confluentinc/cp-kafka:5.0.0
     hostname: kafka-cp-kafka-headless
     ports:
-    - "9092:9092"
+      - "9092:9092"
     environment:
       KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka-cp-kafka-headless:9092,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:19092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
-      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
+      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181
       KAFKA_BROKER_ID: 1
-      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_LOG4J_LOGGERS: kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
-    - zoo1
+      - zoo1
+    restart: unless-stopped
 
   ### Schema Registry ###
-
   schema-registry:
     image: confluentinc/cp-schema-registry:5.2.1
     hostname: schema-registry
     ports:
-    - "18081:18081"
+      - "18081:18081"
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-cp-kafka-headless:9092
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:18081,http://schema-registry:28081
     depends_on:
-    - zoo1
-    - kafka-cp-kafka-headless
+      - zoo1
+      - kafka-cp-kafka-headless
+    restart: unless-stopped
 
   ### Schema Registry UI ###
-
   schema-registry-ui:
     image: landoop/schema-registry-ui:0.9.4
     hostname: schema-registry-ui
     ports:
-    - "8001:8000"
+      - "8001:8000"
     environment:
       SCHEMAREGISTRY_URL: http://schema-registry:28081/
       PROXY: "true"
     depends_on:
-    - schema-registry
+      - schema-registry
+    restart: unless-stopped
 
   ### Flink Session Cluster ###
-
   jobmanager:
-    image: ${FLINK_DOCKER_IMAGE_NAME:-flink:1.8-scala_2.12}
+    # image: ${FLINK_DOCKER_IMAGE_NAME:-flink:1.8-scala_2.12}
+    image: flink:1.17.2-scala_2.12
+    hostname: jobmanager
     expose:
       - "6123"
     ports:
@@ -74,9 +69,14 @@ services:
     depends_on:
       - zoo1
       - kafka-cp-kafka-headless
+    restart: unless-stopped
+    volumes:
+      - ./flink-jobs:/opt/flink/usrlib
 
   taskmanager:
-    image: ${FLINK_DOCKER_IMAGE_NAME:-flink:1.8-scala_2.12}
+    # image: ${FLINK_DOCKER_IMAGE_NAME:-flink:1.8-scala_2.12}
+    image: flink:1.17.2-scala_2.12
+    hostname: taskmanager
     expose:
       - "6121"
       - "6122"
@@ -85,13 +85,22 @@ services:
       - "jobmanager:jobmanager"
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
+      - taskmanager.numberOfTaskSlots=4      # 每个 TM 提供 4 个 Slot
+      - taskmanager.memory.process.size=2g   # 给每个 TM 2GB 内存
+      - parallelism.default=2                # 默认并行度（可选）
     depends_on:
       - jobmanager
       - zoo1
       - kafka-cp-kafka-headless
+    restart: unless-stopped
+    volumes:
+      - ./flink-jobs:/opt/flink/usrlib
 
-  ### Spring Boot Demo###
+  ### Spring Boot Demo ###
   demo:
+    build:
+      context: ./webapp          # 若目录不同请改
+      dockerfile: webapp.Dockerfile     # 若文件名不同请改
     image: demo-fraud-webapp:latest
     hostname: demo
     ports:
@@ -99,3 +108,6 @@ services:
     depends_on:
       - zoo1
       - kafka-cp-kafka-headless
+      - jobmanager              # 如果你的应用要访问 Flink，可保留；否则可移除
+      - taskmanager
+    restart: unless-stopped

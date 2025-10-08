@@ -23,7 +23,7 @@ public class CustomRichParallelSource extends RichParallelSourceFunction<Long> {
         while(isRunning){
             ctx.collect(count);
             count++;
-            this.getRuntimeContext().getAccumulator("accumulator").add(count);
+            this.getRuntimeContext().getAccumulator("accumulator").add((double)count);
             //每秒产生一条数据
             Thread.sleep(1000);
         }

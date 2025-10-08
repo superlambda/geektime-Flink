@@ -31,7 +31,6 @@
 /Users/liuyingjie/flink_workspace/geektime-Flink/lab-3-datastream-api/src/main/java/com/geekbang/flink/wordcount/SocketWindowWordCount.java
 /Users/liuyingjie/flink_workspace/geektime-Flink/lab-3-datastream-api/src/main/java/com/geekbang/flink/watermark/StreamingWindowWatermark2.java
 /Users/liuyingjie/flink_workspace/geektime-Flink/lab-3-datastream-api/src/main/java/com/geekbang/flink/transform/StreamingDemoUnion.java
-/Users/liuyingjie/flink_workspace/geektime-Flink/lab-3-datastream-api/src/main/java/com/geekbang/flink/transform/StreamingDemoSplit.java
 /Users/liuyingjie/flink_workspace/geektime-Flink/lab-3-datastream-api/src/main/java/com/geekbang/flink/windowing/TopSpeedWindowing.java
 /Users/liuyingjie/flink_workspace/geektime-Flink/lab-3-datastream-api/src/main/java/com/geekbang/flink/source/custom/CustomNoParallelSource.java
 /Users/liuyingjie/flink_workspace/geektime-Flink/lab-3-datastream-api/src/main/java/com/geekbang/flink/source/custom/CustomParallelSource.java

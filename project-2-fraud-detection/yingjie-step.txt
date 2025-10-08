@@ -1,0 +1,18 @@
+1: /Users/liuyingjie/flink_workspace/geektime-Flink/project-2-fraud-detection/flink-job
+2: mvn -DskipTests clean package
+3: cd ../
+4: cp flink-job/target/fraud-job.jar flink-jobs/
+5: cd /Users/liuyingjie/flink_workspace/geektime-Flink/project-2-fraud-detection
+6: docker-compose -f docker-compose-local.yaml up -d --scale taskmanager=3
+7: docker-compose -f docker-compose-local.yaml exec -it jobmanager flink run -d /opt/flink/usrlib/fraud-job.jar \
+--kafka-host kafka-cp-kafka-headless \
+--rules-source KAFKA \
+--data-source KAFKA \
+--alerts-sink KAFKA \
+--latency-sink KAFKA \
+--rules-export-sink KAFKA
+8: http://localhost:5656/
+   Add rules
+   Push to Flink
+8: docker-compose -f docker-compose-local.yaml down -v 
+   to stop

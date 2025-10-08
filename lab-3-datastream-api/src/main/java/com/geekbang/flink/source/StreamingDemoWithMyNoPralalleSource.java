@@ -5,6 +5,7 @@ import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 
 /**
@@ -28,9 +29,11 @@ public class StreamingDemoWithMyNoPralalleSource {
         });
 
         //每2秒钟处理一次数据
-        DataStream<Long> sum = num.timeWindowAll(Time.seconds(2)).sum(0);
+        // DataStream<Long> sum = num.timeWindowAll(Time.seconds(2)).sum(0);
 
-        DataStream<Long> max = num.timeWindowAll(Time.seconds(10)).max(0);
+        // DataStream<Long> max = num.timeWindowAll(Time.seconds(10)).max(0);
+        DataStream<Long> sum = num.windowAll(TumblingProcessingTimeWindows.of(Time.seconds(2))).sum(0);
+        DataStream<Long> max = num.windowAll(TumblingProcessingTimeWindows.of(Time.seconds(2))).max(0);
         //打印结果
         sum.print().setParallelism(1);
         max.print().setParallelism(1);

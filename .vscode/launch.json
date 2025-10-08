@@ -6,12 +6,33 @@
     "configurations": [
         {
             "type": "java",
+            "name": "SocketWindowWordCountWithCheckPoint",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.state.checkpoint.SocketWindowWordCountWithCheckPoint",
+            "projectName": "lab-4-stateful-compute"
+        },
+        {
+            "type": "java",
+            "name": "MapWithCounter",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.state.keyedstate.MapWithCounter",
+            "projectName": "lab-4-stateful-compute",
+            "vmArgs": "--add-opens java.base/java.lang=ALL-UNNAMED"
+        },
+        {
+            "type": "java",
+            "name": "BufferingSinkExample",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.state.operatorstate.BufferingSinkExample",
+            "projectName": "lab-4-stateful-compute"
+        },
+        {
+            "type": "java",
             "request": "attach",
             "name": "Java",
             "port": 5005,
             "sourceRoots": []
         },
-
         {
             "type": "java",
             "name": "Current File",
@@ -56,7 +77,12 @@
             "name": "SteamingWithCustomPartitionerExample",
             "request": "launch",
             "mainClass": "com.geekbang.flink.partitioner.SteamingWithCustomPartitionerExample",
-            "projectName": "lab-3-datastream-api"
+            "projectName": "lab-3-datastream-api",
+            "vmArgs": "--add-opens java.base/java.lang=ALL-UNNAMED",
+            "classPaths": [
+                "${workspaceFolder}/lab-3-datastream-api/target/classes",
+                "${workspaceFolder}/lab-3-datastream-api/target/dependency/*"
+            ]
         },
         {
             "type": "java",
@@ -90,28 +116,48 @@
             "name": "StreamingDemoWithMyNoPralalleSource",
             "request": "launch",
             "mainClass": "com.geekbang.flink.source.StreamingDemoWithMyNoPralalleSource",
-            "projectName": "lab-3-datastream-api"
+            "projectName": "lab-3-datastream-api",
+            "vmArgs": "--add-opens java.base/java.lang=ALL-UNNAMED",
+            "classPaths": [
+                "${workspaceFolder}/lab-3-datastream-api/target/classes",
+                "${workspaceFolder}/lab-3-datastream-api/target/dependency/*"
+            ]
         },
         {
             "type": "java",
             "name": "StreamingDemoWithMyPralalleSource",
             "request": "launch",
             "mainClass": "com.geekbang.flink.source.StreamingDemoWithMyPralalleSource",
-            "projectName": "lab-3-datastream-api"
+            "projectName": "lab-3-datastream-api",
+            "vmArgs": "--add-opens java.base/java.lang=ALL-UNNAMED",
+            "classPaths": [
+                "${workspaceFolder}/lab-3-datastream-api/target/classes",
+                "${workspaceFolder}/lab-3-datastream-api/target/dependency/*"
+            ]
         },
         {
             "type": "java",
             "name": "StreamingDemoWithMyRichPralalleSource",
             "request": "launch",
             "mainClass": "com.geekbang.flink.source.StreamingDemoWithMyRichPralalleSource",
-            "projectName": "lab-3-datastream-api"
+            "projectName": "lab-3-datastream-api",
+            "vmArgs": "--add-opens java.base/java.lang=ALL-UNNAMED",
+            "classPaths": [
+                "${workspaceFolder}/lab-3-datastream-api/target/classes",
+                "${workspaceFolder}/lab-3-datastream-api/target/dependency/*"
+            ]
         },
         {
             "type": "java",
             "name": "StreamingFromCollection",
             "request": "launch",
             "mainClass": "com.geekbang.flink.source.StreamingFromCollection",
-            "projectName": "lab-3-datastream-api"
+            "projectName": "lab-3-datastream-api",
+            "vmArgs": "--add-opens java.base/java.lang=ALL-UNNAMED",
+            "classPaths": [
+                "${workspaceFolder}/lab-3-datastream-api/target/classes",
+                "${workspaceFolder}/lab-3-datastream-api/target/dependency/*"
+            ]
         },
         {
             "type": "java",
@@ -160,7 +206,12 @@
             "name": "PojosClass",
             "request": "launch",
             "mainClass": "com.geekbang.flink.types.PojosClass",
-            "projectName": "lab-3-datastream-api"
+            "projectName": "lab-3-datastream-api",
+            "vmArgs": "--add-opens java.base/java.lang=ALL-UNNAMED",
+            "classPaths": [
+                "${workspaceFolder}/lab-3-datastream-api/target/classes",
+                "${workspaceFolder}/lab-3-datastream-api/target/dependency/*"
+            ]
         },
         {
             "type": "java",

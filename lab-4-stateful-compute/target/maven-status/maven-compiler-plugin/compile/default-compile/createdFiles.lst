@@ -1,4 +1,5 @@
 com/geekbang/flink/state/common/kafka/KafkaExampleUtil.class
+com/geekbang/flink/state/operatorstate/BufferingSinkExample$1.class
 com/geekbang/flink/state/queryable/QsStateClient.class
 com/geekbang/flink/state/keyedstate/MapWithCounter.class
 com/geekbang/flink/state/statebackend/RocksDBStateMemoryControlTestProgram$1.class
@@ -27,14 +28,12 @@ com/geekbang/flink/state/broadcaststate/model/Pattern.class
 com/geekbang/flink/state/SocketDemoFullCount$2.class
 com/geekbang/flink/state/common/SemanticsCheckMapper$ValidatorFunction.class
 com/geekbang/flink/state/checkpoint/SocketWindowWordCountWithCheckPoint.class
-com/geekbang/flink/state/common/avro/InnerPayLoadAvro$1.class
 com/geekbang/flink/state/statemachine/event/EventType.class
 com/geekbang/flink/state/statemachine/generator/EventsGeneratorSource.class
 com/geekbang/flink/state/common/TestOperatorEnum.class
 com/geekbang/flink/state/queryable/LabelSurrogate.class
 com/geekbang/flink/state/common/FailureMapper.class
 com/geekbang/flink/state/queryable/QsConstants.class
-com/geekbang/flink/state/common/avro/ComplexPayloadAvro$1.class
 com/geekbang/flink/state/broadcaststate/KeyedBroadcastProcessFunctionExample$2.class
 com/geekbang/flink/state/broadcaststate/BroadcastProcessFunctionExample$1.class
 com/geekbang/flink/state/common/artificialstate/StatefulComplexPayloadSerializer.class
@@ -81,13 +80,13 @@ com/geekbang/flink/state/common/artificialstate/ArtificialKeyedStateMapper.class
 com/geekbang/flink/state/common/kafka/RollingAdditionMapper.class
 com/geekbang/flink/state/operatorstate/MapWithCheckpointedFunction$CustomMapFunction.class
 com/geekbang/flink/state/broadcaststate/KeyedBroadcastProcessFunctionExample$1.class
-com/geekbang/flink/state/savepoint/generated/Address$1.class
 com/geekbang/flink/state/queryable/QsStateProducer.class
 com/geekbang/flink/state/statemachine/dfa/State.class
 com/geekbang/flink/state/statebackend/RocksDBStateMemoryControlTestProgram$MapStateMapper.class
 com/geekbang/flink/state/statebackend/RocksDBStateMemoryControlTestProgram$ListStateMapper.class
 com/geekbang/flink/state/savepoint/StatefulStreamingJob$MyStatefulFunction$2.class
 com/geekbang/flink/state/operatorstate/BufferingSinkExample.class
+com/geekbang/flink/state/operatorstate/BufferingSinkExample$FailingOnceMap.class
 com/geekbang/flink/state/common/kafka/CustomWatermarkExtractor.class
 com/geekbang/flink/state/broadcaststate/BroadcastProcessFunctionExample$2.class
 com/geekbang/flink/state/savepoint/StatefulStreamingJob.class
@@ -105,6 +104,7 @@ com/geekbang/flink/state/common/DataStreamAllroundTestJobFactory$EventIdentityFu
 com/geekbang/flink/state/SocketDemoFullCount.class
 com/geekbang/flink/state/statemachine/generator/EventsGenerator.class
 com/geekbang/flink/state/queryable/LabelSurrogate$Type.class
+com/geekbang/flink/state/operatorstate/BufferingSinkExample$2.class
 com/geekbang/flink/state/savepoint/generated/Address$Builder.class
 com/geekbang/flink/state/checkpoint/SocketWindowWordCountWithCheckPoint$WordWithCount.class
 com/geekbang/flink/state/common/artificialstate/builder/ArtificialListStateBuilder.class

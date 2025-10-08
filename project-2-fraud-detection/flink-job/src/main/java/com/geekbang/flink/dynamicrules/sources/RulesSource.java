@@ -40,7 +40,7 @@ import org.apache.flink.streaming.api.functions.source.SourceFunction;
 import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.connectors.gcp.pubsub.PubSubSource;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer011;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 
 public class RulesSource {
 
@@ -55,8 +55,8 @@ public class RulesSource {
       case KAFKA:
         Properties kafkaProps = KafkaUtils.initConsumerProperties(config);
         String rulesTopic = config.get(RULES_TOPIC);
-        FlinkKafkaConsumer011<String> kafkaConsumer =
-            new FlinkKafkaConsumer011<>(rulesTopic, new SimpleStringSchema(), kafkaProps);
+        FlinkKafkaConsumer<String> kafkaConsumer =
+            new FlinkKafkaConsumer<>(rulesTopic, new SimpleStringSchema(), kafkaProps);
         kafkaConsumer.setStartFromLatest();
         return kafkaConsumer;
       case PUBSUB:

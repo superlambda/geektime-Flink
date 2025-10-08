@@ -37,7 +37,7 @@ import org.apache.flink.streaming.api.functions.sink.DiscardingSink;
 import org.apache.flink.streaming.api.functions.sink.PrintSinkFunction;
 import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 import org.apache.flink.streaming.connectors.gcp.pubsub.PubSubSink;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer011;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 
 @Slf4j
 public class AlertsSink {
@@ -51,7 +51,7 @@ public class AlertsSink {
       case KAFKA:
         Properties kafkaProps = KafkaUtils.initProducerProperties(config);
         String alertsTopic = config.get(ALERTS_TOPIC);
-        return new FlinkKafkaProducer011<>(alertsTopic, new SimpleStringSchema(), kafkaProps);
+        return new FlinkKafkaProducer<>(alertsTopic, new SimpleStringSchema(), kafkaProps);
       case PUBSUB:
         return PubSubSink.<String>newBuilder()
             .withSerializationSchema(new SimpleStringSchema())

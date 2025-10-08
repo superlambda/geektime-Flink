@@ -10,7 +10,8 @@ VOLUME /tmp
 # Make port 5656 available to the world outside this container
 EXPOSE 5656
 
-ADD target/demo-backend-*.jar demo-backend.jar
+# ADD target/demo-fraud-*.jar demo-backend.jar
+COPY target/demo-fraud-*.jar /demo-backend.jar
 
 # Run the jar file
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=dev","-jar","/demo-backend.jar"]

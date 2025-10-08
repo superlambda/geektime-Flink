@@ -33,7 +33,7 @@ import org.apache.flink.streaming.api.functions.sink.DiscardingSink;
 import org.apache.flink.streaming.api.functions.sink.PrintSinkFunction;
 import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 import org.apache.flink.streaming.connectors.gcp.pubsub.PubSubSink;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer011;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 
 public class LatencySink {
 
@@ -46,7 +46,7 @@ public class LatencySink {
       case KAFKA:
         Properties kafkaProps = KafkaUtils.initProducerProperties(config);
         String latencyTopic = config.get(LATENCY_TOPIC);
-        return new FlinkKafkaProducer011<>(latencyTopic, new SimpleStringSchema(), kafkaProps);
+        return new FlinkKafkaProducer<>(latencyTopic, new SimpleStringSchema(), kafkaProps);
       case PUBSUB:
         return PubSubSink.<String>newBuilder()
             .withSerializationSchema(new SimpleStringSchema())

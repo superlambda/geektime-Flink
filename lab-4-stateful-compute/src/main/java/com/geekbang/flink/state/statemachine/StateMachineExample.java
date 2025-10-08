@@ -34,7 +34,7 @@ import org.apache.flink.runtime.state.filesystem.FsStateBackend;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
+// import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
 import org.apache.flink.util.Collector;
 
 import java.util.Properties;
@@ -82,10 +82,10 @@ public class StateMachineExample {
 			Properties kafkaProps = new Properties();
 			kafkaProps.setProperty("bootstrap.servers", brokers);
 
-			FlinkKafkaConsumer010<Event> kafka = new FlinkKafkaConsumer010<>(kafkaTopic, new EventDeSerializer(), kafkaProps);
-			kafka.setStartFromLatest();
-			kafka.setCommitOffsetsOnCheckpoints(false);
-			source = kafka;
+			// FlinkKafkaConsumer010<Event> kafka = new FlinkKafkaConsumer010<>(kafkaTopic, new EventDeSerializer(), kafkaProps);
+			// kafka.setStartFromLatest();
+			// kafka.setCommitOffsetsOnCheckpoints(false);
+			// source = kafka;
 		}
 		else {
 			double errorRate = params.getDouble("error-rate", 0.0);
@@ -119,7 +119,8 @@ public class StateMachineExample {
 		// make parameters available in the web interface
 		env.getConfig().setGlobalJobParameters(params);
 
-		DataStream<Event> events = env.addSource(source);
+		DataStream<Event> events = null;
+		// env.addSource(source);
 
 		DataStream<Alert> alerts = events
 				// partition on the address to make sure equal addresses

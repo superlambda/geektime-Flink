@@ -14,5 +14,5 @@
 8: http://localhost:5656/
    Add rules
    Push to Flink
-8: docker-compose -f docker-compose-local.yaml down -v 
+9: docker-compose -f docker-compose-local.yaml down -v 
    to stop

@@ -35,7 +35,7 @@ public class SQLDemo2 {
 
         StreamTableEnvironment tEnv = StreamTableEnvironment.create(sEnv);
 
-        tEnv.registerTableSource("input_table", new GeneratorTableSource(10, 10, 10, 10));
+        // tEnv.registerTableSource("input_table", new GeneratorTableSource(10, 10, 10, 10));
 
         int overWindowSizeSeconds = 10;
 

@@ -47,8 +47,8 @@ public class SQLDemo {
 
         StreamTableEnvironment tEnv = StreamTableEnvironment.create(sEnv);
 
-        tEnv.registerTableSource("table1", new GeneratorTableSource(10, 100, 60, 0));
-        tEnv.registerTableSource("table2", new GeneratorTableSource(5, 0.2f, 60, 5));
+        // tEnv.registerTableSource("table1", new GeneratorTableSource(10, 100, 60, 0));
+        // tEnv.registerTableSource("table2", new GeneratorTableSource(5, 0.2f, 60, 5));
 
         int overWindowSizeSeconds = 10;
         int tumbleWindowSizeSeconds = 10;

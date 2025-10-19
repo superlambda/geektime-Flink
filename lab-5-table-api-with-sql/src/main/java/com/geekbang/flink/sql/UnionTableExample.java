@@ -44,15 +44,15 @@ public class UnionTableExample {
 			new Order(4L, "beer", 1)));
 
 		// 通过fromDataStream方法将DataStream转换为Table
-		Table tableA = tEnv.fromDataStream(orderA, "user, product, amount");
-		// 通过registerDataStream方法将DataStream数据集注册为Table
-		tEnv.registerDataStream("OrderB", orderB, "user, product, amount");
+		// Table tableA = tEnv.fromDataStream(orderA, "user, product, amount");
+		// // 通过registerDataStream方法将DataStream数据集注册为Table
+		// tEnv.registerDataStream("OrderB", orderB, "user, product, amount");
 
-		// union the two tables
-		Table result = tEnv.sqlQuery("SELECT * FROM " + tableA + " WHERE amount > 2 UNION ALL " +
-						"SELECT * FROM OrderB WHERE amount < 2");
+		// // union the two tables
+		// Table result = tEnv.sqlQuery("SELECT * FROM " + tableA + " WHERE amount > 2 UNION ALL " +
+		// 				"SELECT * FROM OrderB WHERE amount < 2");
 
-		tEnv.toAppendStream(result, Order.class).print();
+		// tEnv.toAppendStream(result, Order.class).print();
 
 		env.execute();
 	}

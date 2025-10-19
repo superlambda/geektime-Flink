@@ -31,7 +31,7 @@ public class TableToDataStream {
 
         StreamTableEnvironment tEnv = StreamTableEnvironment.create(sEnv);
 
-        tEnv.registerTableSource("table", new GeneratorTableSource(10, 100, 60, 0));
+        // tEnv.registerTableSource("table", new GeneratorTableSource(10, 100, 60, 0));
 
         Table table = tEnv.scan("table");
 

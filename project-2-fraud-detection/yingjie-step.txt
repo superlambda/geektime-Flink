@@ -16,3 +16,33 @@
    Push to Flink
 9: docker-compose -f docker-compose-local.yaml down -v 
    to stop
+
+
+Topology
+                +------------------------------+
+Rules Source -->|  stringsStreamToRules        |
+                |  (Rule JSON -> Rule)         |
+                +---------------+--------------+
+                                |
+                                v (broadcast)
+                            BroadcastStream<Rule>
+                                           \
+                                            \ (1) 连接广播获取动态 key
+                                             \
+Transactions Source --> parse -> timestamp -> +-- DynamicKeyFunction --> (Keyed by new key)
+                                                                      \
+                                                                       \ connect broadcast again
+                                                                        \
+                                                                         DynamicAlertFunction
+                                                                               |
+                  +-------------------------------+----------------------------+
+                  |                               |                            |
+                  v (main)                        v (side output)              v (side output)
+                Alerts (Alert)                latency<Long>               currentRules<Rule>
+
+                  |                                 |                           |
+               JSON 序列化                       10s 全局窗口平均              JSON 序列化
+                  |                                 |                           |
+          Alerts Sink (Kafka/PubSub/StdOut/Discard) |                Rules Export Sink
+                                                    |
+                                               Latency Sink

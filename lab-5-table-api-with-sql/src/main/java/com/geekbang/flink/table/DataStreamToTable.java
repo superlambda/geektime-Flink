@@ -33,13 +33,13 @@ public class DataStreamToTable {
         inputStream.print();
 
         // declare an additional logical field as a processing time attribute
-        Table table = tEnv.fromDataStream(inputStream, "key, event_time.rowtime, pay_load,process_time.proctime");
+        // Table table = tEnv.fromDataStream(inputStream, "key, event_time.rowtime, pay_load,process_time.proctime");
 
-        GroupWindowedTable windowedTable = table.window(Tumble.over("10.minutes").on("process_time").as("userActionWindow"));
+        // GroupWindowedTable windowedTable = table.window(Tumble.over("10.minutes").on("process_time").as("userActionWindow"));
 
-        DataStream dataStream = tEnv.toAppendStream(table, Types.ROW(Types.INT, Types.SQL_TIMESTAMP, Types.STRING, Types.SQL_TIMESTAMP));
+        // DataStream dataStream = tEnv.toAppendStream(table, Types.ROW(Types.INT, Types.SQL_TIMESTAMP, Types.STRING, Types.SQL_TIMESTAMP));
 
-        dataStream.print();
+        // dataStream.print();
 
         sEnv.execute();
 

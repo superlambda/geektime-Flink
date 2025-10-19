@@ -22,7 +22,8 @@
         <module>lab-3-datastream-api</module>
         <module>lab-4-stateful-compute</module>
         <module>project-2-fraud-detection</module>
-        <!-- <module>lab-5-table-api-with-sql</module>
+        <module>lab-5-table-api-with-sql</module>
+        <!--
         <module>lab-6-flink-runtime</module>
         <module>lab-7-alink-project</module>
         <module>project-1-pv-uv-computing</module>

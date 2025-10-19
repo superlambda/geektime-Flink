@@ -23,7 +23,7 @@ public class Windows {
         // ingest a DataStream from an external source
         DataStream<Tuple4<Long, String, Integer, Long>> ds = sEnv.addSource(new OrderSourceFunction(10, 0.01f, 60, 0));
         // register the DataStream as table "Orders"
-        tableEnv.registerDataStream("Orders", ds, "user, product, amount, rowtime.rowtime, proctime.proctime");
+        // tableEnv.registerDataStream("Orders", ds, "user, product, amount, rowtime.rowtime, proctime.proctime");
         ds.print();
         // compute SUM(amount) per day (in event-time)
         Table result1 = tableEnv.sqlQuery(

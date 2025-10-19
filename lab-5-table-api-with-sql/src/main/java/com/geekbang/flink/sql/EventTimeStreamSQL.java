@@ -78,9 +78,9 @@ public class EventTimeStreamSQL {
 
         StreamTableEnvironment tEnv = StreamTableEnvironment.create(sEnv);
 
-        tEnv.registerTableSource("table1", new EventTimeTableSource("table1", 5, 0.2f, 60, 0));
+        // tEnv.registerTableSource("table1", new EventTimeTableSource("table1", 5, 0.2f, 60, 0));
 
-        tEnv.registerTableSource("table2", new EventTimeTableSource("table2", 1, 0.2f, 60, 5));
+        // tEnv.registerTableSource("table2", new EventTimeTableSource("table2", 1, 0.2f, 60, 5));
 
         int overWindowSizeSeconds = 5;
 

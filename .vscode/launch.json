@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "TumbleWindow",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.windows.TumbleWindow",
+            "projectName": "lab-5-table-api-with-sql"
+        },
+        {
+            "type": "java",
             "name": "SocketWindowWordCountWithCheckPoint",
             "request": "launch",
             "mainClass": "com.geekbang.flink.state.checkpoint.SocketWindowWordCountWithCheckPoint",
@@ -324,6 +331,13 @@
             "request": "launch",
             "mainClass": "com.geekbang.recommend.RecommendBackendApplication",
             "projectName": "recommend-backend"
+        },
+        {
+            "type": "java",
+            "name": "KafkaTableConnector",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.kafka.KafkaTableConnector",
+            "projectName": "lab-5-table-api-with-sql"
         }
     ]
 }

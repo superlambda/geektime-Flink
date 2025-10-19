@@ -37,9 +37,9 @@ public class ProcessTimeStreamSQL {
 
         StreamTableEnvironment tEnv = StreamTableEnvironment.create(sEnv);
 
-        tEnv.registerTableSource("table1", new ProcessTimeTableSource("table1", 5, 0.2f, 60, 0));
+        // tEnv.registerTableSource("table1", new ProcessTimeTableSource("table1", 5, 0.2f, 60, 0));
 
-        tEnv.registerTableSource("table2", new ProcessTimeTableSource("table2", 1, 0.2f, 60, 5));
+        // tEnv.registerTableSource("table2", new ProcessTimeTableSource("table2", 1, 0.2f, 60, 5));
 
         int tumbleWindowSizeSeconds = 10;
 

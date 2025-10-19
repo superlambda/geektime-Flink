@@ -1,110 +1,51 @@
 package com.geekbang.flink.kafka;
 
-import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.api.common.typeinfo.Types;
-import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
-import org.apache.flink.table.descriptors.*;
-import org.apache.flink.table.sinks.CsvTableSink;
-
+import org.apache.flink.table.api.EnvironmentSettings;
 
 public class KafkaTableConnector {
+    public static void main(String[] args) throws Exception {
+        // ✅ 1. 创建 Flink 环境
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        EnvironmentSettings settings = EnvironmentSettings.newInstance().inStreamingMode().build();
+        StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env, settings);
 
-    public static void main(String args[]) throws Exception {
+        // ✅ 2. 注册 Kafka Source
+        tableEnv.executeSql("""
+            CREATE TABLE order_table (
+              transactionId STRING,
+              orderTime TIMESTAMP(3),
+              orderItems ROW<orderItemId STRING, price DOUBLE>
+            ) WITH (
+              'connector' = 'kafka',
+              'topic' = 'order-input',
+              'properties.bootstrap.servers' = 'localhost:9092',
+              'properties.group.id' = 'flink-group',
+              'scan.startup.mode' = 'earliest-offset',
+              'format' = 'json',
+              'json.ignore-parse-errors' = 'true'
+            )
+        """);
 
-        StreamExecutionEnvironment bsEnv = StreamExecutionEnvironment.getExecutionEnvironment();
-        EnvironmentSettings bsSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
-        StreamTableEnvironment bsTableEnv = StreamTableEnvironment.create(bsEnv, bsSettings);
+        // ✅ 3. 注册 Sink（写到本地 CSV 文件）
+        tableEnv.executeSql("""
+            CREATE TABLE result_table (
+              transactionId STRING,
+              orderTime TIMESTAMP(3),
+              price DOUBLE
+            ) WITH (
+              'connector' = 'filesystem',
+              'path' = '/Users/liuyingjie/flink_workspace/sink-result/order_result',
+              'format' = 'csv'
+            )
+        """);
 
-        //注册Kafka Table数据源
-        bsTableEnv.connect(
-                new Kafka()
-                        .version("0.11")
-                        .topic("order-input")
-                        .startFromEarliest()
-                        .property("zookeeper.connect", "172.27.133.19:7181")
-                        .property("bootstrap.servers", "172.27.133.19:9092")
-        ).withFormat(new Json().jsonSchema(
-                "{" +
-                        "  \"definitions\": {" +
-                        "    \"orderItems\": {" +
-                        "      \"type\": \"object\"," +
-                        "      \"properties\": {" +
-                        "        \"orderItemId\": {" +
-                        "          \"type\": \"string\"" +
-                        "        }," +
-                        "        \"price\": {" +
-                        "          \"type\": \"number\"" +
-                        "        }," +
-                        "        \"itemLinkIds\": {" +
-                        "          \"type\": \"object\"," +
-                        "          \"properties\": {" +
-                        "            \"linkId\": {" +
-                        "              \"type\": \"string\"" +
-                        "            }," +
-                        "            \"price\": {" +
-                        "              \"type\": \"number\"" +
-                        "            }" +
-                        "          }," +
-                        "          \"required\": [" +
-                        "            \"linkId\"," +
-                        "            \"price\"" +
-                        "          ]" +
-                        "        }" +
-                        "      }," +
-                        "      \"required\": [" +
-                        "        \"orderItemId\"," +
-                        "        \"price\"" +
-                        "      ]" +
-                        "    }" +
-                        "  }," +
-                        "  \"type\": \"object\"," +
-                        "  \"properties\": {" +
-                        "    \"transactionId\": {" +
-                        "      \"type\": \"string\"" +
-                        "    }," +
-                        "    \"orderTime\": {" +
-                        "      \"type\": \"string\"," +
-                        "      \"format\": \"date-time\"" +
-                        "    }," +
-                        "    \"orderItems\": {" +
-                        "      \"oneOf\": [" +
-                        "        {" +
-                        "          \"type\": \"null\"" +
-                        "        }," +
-                        "        {" +
-                        "          \"$ref\": \"#/definitions/orderItems\"" +
-                        "        }" +
-                        "      ]" +
-                        "    }" +
-                        "  }" +
-                        "}"
-        )).withSchema(
-                new Schema().field("transactionId", Types.STRING)
-                        .field("orderTime", Types.SQL_TIMESTAMP)
-                        .field("promiseTime", Types.SQL_TIMESTAMP)
-                        .field("", Types.ROW_NAMED(new String[]{"linkids", "systemIds", "type"},
-                                new TypeInformation[]{Types.STRING, Types.STRING, Types.BIG_DEC}))
-        ).inAppendMode().createTemporaryTable("order_table");
-
-        String path = "/Users/zhanglibing/Desktop/learning-flink/data/table/order_result.csv";
-        CsvTableSink sink = new CsvTableSink(
-                path,
-                "|",
-                1,
-                FileSystem.WriteMode.OVERWRITE);
-
-        bsTableEnv.registerTableSink(
-                "result_table",
-                // specify table schema
-                new String[]{"transactionId", "orderTime", "promiseTime", "orderAmount"},
-                new TypeInformation[]{Types.STRING, Types.SQL_TIMESTAMP, Types.SQL_TIMESTAMP, Types.BIG_DEC},
-                sink);
-
-        bsTableEnv.sqlUpdate("insert into result_table(transactionId,userCode,couponCode) select * from order_table");
-
-        bsTableEnv.execute("Kafka Table Connector Test");
+        // ✅ 4. SQL 逻辑
+        tableEnv.executeSql("""
+            INSERT INTO result_table
+            SELECT transactionId, orderTime, orderItems.price
+            FROM order_table
+        """);
     }
 }

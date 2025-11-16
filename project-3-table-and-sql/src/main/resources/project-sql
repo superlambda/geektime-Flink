@@ -1,3 +1,5 @@
+-- Case 1
+
 drop table if EXISTS user_behavior;
 
 CREATE TABLE user_behavior (
@@ -5,69 +7,87 @@ CREATE TABLE user_behavior (
     item_id BIGINT,
     category_id BIGINT,
     behavior STRING,
-    ts TIMESTAMP(3),
-    proctime as PROCTIME(),   
-    WATERMARK FOR ts as ts - INTERVAL '5' SECOND  
-) WITH (
-    'connector.type' = 'kafka',  
-    'connector.version' = 'universal',  
-    'connector.topic' = 'user_behavior',  
-    'connector.startup-mode' = 'latest-offset',  
-    'connector.properties.zookeeper.connect' = 'node01:2181',  
-    'connector.properties.bootstrap.servers' = 'node01:9092',  
-    'format.type' = 'csv'  
+    ts_ms BIGINT,
+    ts AS TO_TIMESTAMP_LTZ(ts_ms, 3),
+    WATERMARK FOR ts AS ts - INTERVAL '5' SECOND
+)
+WITH (
+    'connector' = 'kafka',
+    'topic' = 'user_behavior',
+    'properties.bootstrap.servers' = 'localhost:9092',
+    'scan.startup.mode' = 'latest-offset',
+    'format' = 'json'
 );
 
-CREATE TABLE buy_cnt_per_hour ( 
+
+
+-- bin/kafka-topics.sh --create \
+--     --topic user_behavior \
+--     --bootstrap-server localhost:9092 \
+--     --partitions 3 \
+--     --replication-factor 1
+
+-- bin/kafka-topics.sh --delete --topic user_behavior --bootstrap-server localhost:9092 
+
+
+CREATE TABLE buy_cnt_per_hour (
     hour_of_day BIGINT,
     buy_cnt BIGINT
-) WITH (
-    'connector.type' = 'elasticsearch', 
-    'connector.version' = '7',  
-    'connector.hosts' = 'http://localhost:9200',  
-    'connector.index' = 'buy_cnt_per_hour',  
-    'connector.document-type' = 'user_behavior', 
-    'connector.bulk-flush.max-actions' = '1',  
-    'format.type' = 'json',  
-    'update-mode' = 'append'
+)
+WITH (
+    'connector' = 'elasticsearch-7',
+    'hosts' = 'http://localhost:9200',
+    'index' = 'buy_cnt_per_hour',
+    'sink.bulk-flush.max-actions' = '1',
+    'format' = 'json'
 );
 
-
-
-
 INSERT INTO buy_cnt_per_hour
-SELECT HOUR(TUMBLE_START(ts, INTERVAL '1' HOUR)), COUNT(*)
+SELECT 
+    HOUR(TUMBLE_START(ts, INTERVAL '1' HOUR)) AS hour_of_day,
+    COUNT(*) AS buy_cnt
 FROM user_behavior
 WHERE behavior = 'buy'
 GROUP BY TUMBLE(ts, INTERVAL '1' HOUR);
 
 
+-- Case 2
+
+
 CREATE TABLE cumulative_uv (
     time_str STRING,
-    uv BIGINT
-) WITH (
-    'connector.type' = 'elasticsearch',
-    'connector.version' = '7',
-    'connector.hosts' = 'http://localhost:9200',
-    'connector.index' = 'cumulative_uv',
-    'connector.document-type' = 'user_behavior',
-    'format.type' = 'json',
-    'update-mode' = 'upsert'
+    uv BIGINT,
+    PRIMARY KEY (time_str) NOT ENFORCED
+)
+WITH (
+    'connector' = 'elasticsearch-7',
+    'hosts' = 'http://localhost:9200',
+    'index' = 'cumulative_uv',
+    'document-id.key-delimiter' = '_',
+    'sink.bulk-flush.max-actions' = '1',
+    'format' = 'json'
 );
 
 
+
+
 CREATE VIEW uv_per_10min AS
-SELECT 
-  MAX(SUBSTR(DATE_FORMAT(ts, 'HH:mm'),1,4) || '0') OVER w AS time_str, 
-  COUNT(DISTINCT user_id) OVER w AS uv
-FROM user_behavior
-WINDOW w AS (ORDER BY proctime ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW);
+SELECT
+    DATE_FORMAT(window_start, 'HH:mm') AS time_str,
+    COUNT(DISTINCT user_id) AS uv
+FROM TABLE(
+    TUMBLE(TABLE user_behavior, DESCRIPTOR(ts), INTERVAL '10' MINUTES)
+)
+GROUP BY window_start, window_end;
+
 
 INSERT INTO cumulative_uv
 SELECT time_str, MAX(uv)
 FROM uv_per_10min
 GROUP BY time_str;
 
+
+-- Case 3
 
 CREATE TABLE category_dim (
     sub_category_id BIGINT,  

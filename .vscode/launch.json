@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Windows",
+            "request": "launch",
+            "mainClass": "com.geekbang.flink.windows.Windows",
+            "projectName": "lab-5-table-api-with-sql"
+        },
+        {
+            "type": "java",
             "name": "TumbleWindow",
             "request": "launch",
             "mainClass": "com.geekbang.flink.windows.TumbleWindow",

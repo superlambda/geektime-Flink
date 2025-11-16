@@ -22,7 +22,10 @@ import org.apache.flink.types.Row;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * 按事件时间的 10 秒 Tumble 窗口，统计每个 key 的平均价格。
+ * 支持乱序事件（Watermark 延迟 3 秒），持续运行。
+ */
 public class TumbleWindow {
     public static void main(String[] args) throws Exception {
 
@@ -32,41 +35,48 @@ public class TumbleWindow {
         sEnv.setRestartStrategy(RestartStrategies.fixedDelayRestart(3, Time.of(10, TimeUnit.SECONDS)));
         sEnv.enableCheckpointing(4000);
         sEnv.getConfig().setAutoWatermarkInterval(1000);
-        sEnv.getConfig().disableGenericTypes(); // 放在创建 env 后
+        sEnv.getConfig().disableGenericTypes();
 
         StreamTableEnvironment tEnv = StreamTableEnvironment.create(sEnv);
 
-        // ✅ Replace deprecated registerTableSource with TableDescriptor + datagen connector
+        // ✅ 模拟数据源 (datagen)
+        // Watermark 延迟 3 秒：表示容忍乱序到达
         tEnv.createTemporaryTable(
                 "table1",
                 TableDescriptor.forConnector("datagen")
                         .schema(Schema.newBuilder()
                                 .column("key", DataTypes.INT())
                                 .column("price", DataTypes.DOUBLE())
+                                // 模拟事件时间列
                                 .columnByExpression("rowtime", "CAST(CURRENT_TIMESTAMP AS TIMESTAMP_LTZ(3))")
-                                .watermark("rowtime", "rowtime - INTERVAL '0' SECOND")
+                                .watermark("rowtime", "rowtime - INTERVAL '3' SECOND") // 允许乱序 3 秒
                                 .build())
-                        .option("rows-per-second", "10")
-                        .option("fields.key.kind", "sequence")
-                        .option("fields.key.start", "1")
-                        .option("fields.key.end", "100")
-                        .option("fields.price.min", "1")
+                        .option("rows-per-second", "50")
+                        .option("fields.key.kind", "random")
+                        .option("fields.key.min", "1")
+                        .option("fields.key.max", "5")
+                        .option("fields.price.min", "10")
                         .option("fields.price.max", "100")
+                        .option("number-of-rows", "1000") 
                         .build()
         );
 
-        int overWindowSizeSeconds = 10;
-
-        String overQuery = String.format(
+        // ✅ 按事件时间滚动窗口 (10 秒)
+        String tumbleQuery =
                 "SELECT " +
                         "  key, " +
-                        "  rowtime, " +
-                        "  COUNT(*) OVER (PARTITION BY key ORDER BY rowtime RANGE BETWEEN INTERVAL '%d' SECOND PRECEDING AND CURRENT ROW) AS cnt " +
-                        "FROM table1",
-                overWindowSizeSeconds);
+                        "  window_start, " +
+                        "  window_end, " +
+                        "  AVG(price) AS avg_price, " +
+                        "  COUNT(*) AS cnt " +
+                        "FROM TABLE( " +
+                        "  TUMBLE(TABLE table1, DESCRIPTOR(rowtime), INTERVAL '10' SECOND)" +
+                        ") " +
+                        "GROUP BY key, window_start, window_end";
 
-        Table result = tEnv.sqlQuery(overQuery);
+        Table result = tEnv.sqlQuery(tumbleQuery);
 
+        // ✅ 输出结果
         DataStream<Row> resultStream = tEnv.toDataStream(result);
 
         final StreamingFileSink<Row> sink = StreamingFileSink
@@ -79,79 +89,69 @@ public class TumbleWindow {
 
         resultStream.print();
 
+        // ✅ 不再触发异常
         DataStream<Row> mapped = resultStream
-        .map(new ConfigurableKillMapper())
-        .returns(resultStream.getType())      // 保留 RowTypeInfo
-        .name("ConfigurableKillMapper");
+                .map(new ConfigurableKillMapper(3, false))
+                .returns(resultStream.getType())
+                .name("ConfigurableKillMapper");
+
         mapped.addSink(sink).setParallelism(1).name("FileSink");
 
-        sEnv.execute("Tumble Window Example");
+        sEnv.execute("Tumble Window with EventTime & Watermark Example");
     }
 }
 
 /**
-         * 可配置“在第 N 条记录”触发一次性失败（仅首次 attempt）。
-         */
-class ConfigurableKillMapper
-                implements MapFunction<Row, Row>, CheckpointedFunction {
+ * 保留原 ConfigurableKillMapper，可选失败逻辑。
+ * 当前默认禁用。
+ */
+class ConfigurableKillMapper implements MapFunction<Row, Row>, CheckpointedFunction {
 
-        private static final Logger LOG = LoggerFactory.getLogger(ConfigurableKillMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigurableKillMapper.class);
 
-        private final int killAtRecord;       // 第几条触发
-        private final boolean enabled;
+    private final int killAtRecord;
+    private final boolean enabled;
 
-        // checkpointed
-        private long processed = 0L;
+    private long processed = 0L;
+    private long attemptProcessed = 0L;
+    private transient ListState<Long> checkpointedState;
 
-        // non-checkpointed（attempt 内计数）
-        private long attemptProcessed = 0L;
+    public ConfigurableKillMapper() {
+        this(2, true);
+    }
 
-        private transient ListState<Long> checkpointedState;
+    public ConfigurableKillMapper(int killAtRecord, boolean enabled) {
+        this.killAtRecord = killAtRecord;
+        this.enabled = enabled;
+    }
 
-        public ConfigurableKillMapper() {
-                this(2, true);
+    @Override
+    public Row map(Row value) {
+        if (enabled) {
+            if (processed == attemptProcessed && attemptProcessed + 1 == killAtRecord) {
+                LOG.warn("ConfigurableKillMapper: intentionally failing at record {} (first attempt)", killAtRecord);
+                throw new RuntimeException("Intentional failure at record " + killAtRecord);
+            }
         }
+        processed++;
+        attemptProcessed++;
+        return value;
+    }
 
-        public ConfigurableKillMapper(int killAtRecord, boolean enabled) {
-                this.killAtRecord = killAtRecord;
-                this.enabled = enabled;
+    @Override
+    public void snapshotState(FunctionSnapshotContext context) throws Exception {
+        checkpointedState.clear();
+        checkpointedState.add(processed);
+    }
+
+    @Override
+    public void initializeState(FunctionInitializationContext context) throws Exception {
+        ListStateDescriptor<Long> desc =
+                new ListStateDescriptor<>("killmapper-processed", Long.class);
+        checkpointedState = context.getOperatorStateStore().getListState(desc);
+        processed = 0L;
+        for (Long v : checkpointedState.get()) {
+            processed += v;
         }
-
-        @Override
-        public Row map(Row value) {
-                if (enabled) {
-                // 只有第一次 attempt 满足：processed == attemptProcessed （因为恢复后 attemptProcessed 清零）
-                if (processed == attemptProcessed &&
-                        attemptProcessed + 1 == killAtRecord) {
-
-                        LOG.warn("ConfigurableKillMapper: intentionally failing at record {} (first attempt)",
-                                killAtRecord);
-                        throw new RuntimeException("Intentional failure at record " + killAtRecord);
-                }
-                }
-                processed++;
-                attemptProcessed++;
-                return value;
-        }
-
-        /* ---------- CheckpointedFunction 实现 ---------- */
-
-        @Override
-        public void snapshotState(FunctionSnapshotContext context) throws Exception {
-                checkpointedState.clear();
-                checkpointedState.add(processed);
-        }
-
-        @Override
-        public void initializeState(FunctionInitializationContext context) throws Exception {
-                ListStateDescriptor<Long> desc =
-                        new ListStateDescriptor<>("killmapper-processed", Long.class);
-                checkpointedState = context.getOperatorStateStore().getListState(desc);
-
-                processed = 0L;
-                for (Long v : checkpointedState.get()) {
-                processed += v;
-                }
-                // attemptProcessed 不恢复，保持 0 用来判定“是否首次 attempt”
-        }
+    }
 }

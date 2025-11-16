@@ -1,0 +1,38 @@
+1: start elasticsearch
+   cd /Users/liuyingjie/elasticsearch-7.17.29/bin
+   ./elasticsearch
+2: start kibana
+   cd /Users/liuyingjie/kibana-7.17.29-darwin-x86_64/bin
+   ./kibana --allow-root
+
+3: start zookeeper
+   cd /Users/liuyingjie/apache-zookeeper-3.7.0-bin/bin
+   ./zkServer.sh --config ../conf start
+   ./zkServer.sh --config ../conf stop
+
+4: start kafka
+   cd /Users/liuyingjie/kafka/kafka_2.13-3.4.0
+   ./bin/kafka-server-start.sh config/server.properties
+
+5: start flink
+   cd /Users/liuyingjie/flink_workspace/flink-1.19.2/bin
+    ./start-cluster.sh  
+    ./sql-client.sh embedded  
+   
+6: create kakfa topic
+      -- bin/kafka-topics.sh --create \
+      --     --topic user_behavior \
+      --     --bootstrap-server localhost:9092 \
+      --     --partitions 3 \
+      --     --replication-factor 1
+
+      -- bin/kafka-topics.sh --delete --topic user_behavior --bootstrap-server localhost:9092 
+
+7: in sql client run the sql in project-sql
+
+8: produce data to kafka
+   cd /Users/liuyingjie/flink_workspace/geektime-Flink/project-3-table-and-sql
+   python3 produce_csv_to_kafka.py
+
+8: go to kibana dashboard to create matrics
+   http://localhost:5601

@@ -1,3 +1,26 @@
+On old machine
+Docer is run on colima
+
+
+
+-- Check colima and docker connection
+INFO[0001] colima is running using QEMU                 
+INFO[0001] arch: x86_64                                 
+INFO[0001] runtime: docker                              
+INFO[0001] mountType: sshfs                             
+INFO[0001] docker socket: unix:///Users/liuyingjie/.colima/default/docker.sock 
+INFO[0001] containerd socket: unix:///Users/liuyingjie/.colima/default/containerd.sock 
+liuyingjie@liuyingjiedeMacBook-Pro ~ % docker context ls
+
+NAME       DESCRIPTION                               DOCKER ENDPOINT                                        ERROR
+colima *   colima                                    unix:///Users/liuyingjie/.colima/default/docker.sock   
+default    Current DOCKER_HOST based configuration   unix:///var/run/docker.sock                   
+
+
+
+
+
+0: colima start
 1: /Users/liuyingjie/flink_workspace/geektime-Flink/project-2-fraud-detection/flink-job
 2: mvn -DskipTests clean package
 3: cd ../
